@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="km">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>គណនាថ្លៃផ្ញើរយានជំនិះ - Parking Fee Calculator</title>
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Khmer:wght@400;500;600;700&display=swap"
+        rel="stylesheet" />
+    <style>
+        body {
+            font-family: 'Noto Sans Khmer', 'Inter', sans-serif;
+            background-color: #0b0000;
+        }
+
+        .coral-panel {
+            background-color: #c7e6e5;
+        }
+
+        .btn-calculate {
+            background-color: #12a0f3;
+            transition: background-color 0.15s ease, transform 0.1s ease;
+        }
+
+        .btn-calculate:hover {
+            background-color: #f3f4f5;
+        }
+
+        .btn-calculate:active {
+            transform: scale(0.99);
+        }
+
+        .field-box {
+            background-color: #e9f3f7;
+            border: 1.5px solid #1e1e1e;
+            color: #111827;
+        }
+
+        .field-box:focus-within {
+            outline: 2px solid #ffffff;
+            outline-offset: 1px;
+        }
+
+        input[type="time"]::-webkit-calendar-picker-indicator {
+            cursor: pointer;
+            opacity: 0.85;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex flex-col items-center justify-center p-4 sm:p-6 md:p-8 text-gray-900">
+    <main class="w-full max-w-4xl">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 items-stretch">
+            <!-- Left Panel: Calculator Form -->
+            <section class="coral-panel rounded-lg shadow-lg p-6 sm:p-8 flex flex-col justify-between">
+                <div>
+                    <h1 class="text-center text-white text-xl sm:text-2xl font-bold mb-6 drop-shadow-sm">
+                        គណនាថ្លៃផ្ញើរយានជំនិះ៖
+                    </h1>
+
+                    <form id="parkingForm" class="space-y-4" novalidate>
+                        <!-- Vehicle Selection -->
+                        <div class="grid grid-cols-1 sm:grid-cols-12 items-center gap-2 sm:gap-3">
+                            <label for="vehicleType"
+                                class="sm:col-span-5 text-sm sm:text-base font-medium text-gray-900">
+                                ជ្រើសរើស យានជំនិះ
+                            </label>
+                            <div class="sm:col-span-7">
+                                <div class="field-box rounded-md px-3 py-2 flex items-center">
+                                    <select id="vehicleType"
+                                        class="w-full bg-transparent text-gray-900 font-medium focus:outline-none cursor-pointer">
+                                        <option value="car">ឡាន</option>
+                                        <option value="moto">ម៉ូតូ</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Time In -->
+                        <div class="grid grid-cols-1 sm:grid-cols-12 items-center gap-2 sm:gap-3">
+                            <label for="timeIn" class="sm:col-span-5 text-sm sm:text-base font-medium text-gray-900">
+                                ម៉ោងចូល
+                            </label>
+                            <div class="sm:col-span-7">
+                                <div class="field-box rounded-md px-3 py-2 flex items-center">
+                                    <input type="time" id="timeIn" value="08:00"
+                                        class="w-full bg-transparent text-gray-900 font-medium focus:outline-none"
+                                        required />
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Time Out -->
+                        <div class="grid grid-cols-1 sm:grid-cols-12 items-center gap-2 sm:gap-3">
+                            <label for="timeOut" class="sm:col-span-5 text-sm sm:text-base font-medium text-gray-900">
+                                ម៉ោងចេញ
+                            </label>
+                            <div class="sm:col-span-7">
+                                <div class="field-box rounded-md px-3 py-2 flex items-center">
+                                    <input type="time" id="timeOut" value="16:00"
+                                        class="w-full bg-transparent text-gray-900 font-medium focus:outline-none"
+                                        required />
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Fee in Riel -->
+                        <div class="grid grid-cols-1 sm:grid-cols-12 items-center gap-2 sm:gap-3">
+                            <label for="feeRiel" class="sm:col-span-5 text-sm sm:text-base font-medium text-gray-900">
+                                ថ្លៃផ្ញើរ រៀល
+                            </label>
+                            <div class="sm:col-span-7">
+                                <div class="field-box rounded-md px-3 py-2 flex items-center justify-between">
+                                    <input type="text" id="feeRiel" readonly placeholder="0"
+                                        class="w-full bg-transparent text-gray-900 font-semibold focus:outline-none" />
+                                    <span class="text-gray-900 font-bold ml-2 select-none">៛</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Fee in Dollar -->
+                        <div class="grid grid-cols-1 sm:grid-cols-12 items-center gap-2 sm:gap-3">
+                            <label for="feeDollar" class="sm:col-span-5 text-sm sm:text-base font-medium text-gray-900">
+                                ថ្លៃផ្ញើរ ដុល្លា
+                            </label>
+                            <div class="sm:col-span-7">
+                                <div class="field-box rounded-md px-3 py-2 flex items-center justify-between">
+                                    <input type="text" id="feeDollar" readonly placeholder="0.00"
+                                        class="w-full bg-transparent text-gray-900 font-semibold focus:outline-none" />
+                                    <span class="text-gray-900 font-bold ml-2 select-none">$</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Error / Info Banner -->
+                        <div id="statusMsg"
+                            class="hidden rounded-md px-3 py-2 text-xs sm:text-sm font-medium bg-white/80 text-gray-900">
+                        </div>
+
+                        <!-- Calculate Button -->
+                        <div class="grid grid-cols-1 sm:grid-cols-12 pt-2">
+                            <div class="sm:col-start-6 sm:col-span-7">
+                                <button type="submit" id="calculateBtn"
+                                    class="btn-calculate w-full text-white font-semibold py-2.5 px-6 rounded-md shadow-sm cursor-pointer">
+                                    គណនា
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <script>
+                    const EXCHANGE_RATE = 4000; // 1 USD = 4,000 KHR
+                    const RATES = {
+                        car: { upTo8h: 500, over8h: 1000 },
+                        moto: { upTo8h: 200, over8h: 300 }
+                    };
+
+                    const form = document.getElementById('parkingForm');
+                    const vehicleEl = document.getElementById('vehicleType');
+                    const timeInEl = document.getElementById('timeIn');
+                    const timeOutEl = document.getElementById('timeOut');
+                    const feeRielEl = document.getElementById('feeRiel');
+                    const feeDollarEl = document.getElementById('feeDollar');
+                    const statusMsgEl = document.getElementById('statusMsg');
+                    const durationTextEl = document.getElementById('durationText');
+                    const preset4hBtn = document.getElementById('preset4hBtn');
+                    const preset10hBtn = document.getElementById('preset10hBtn');
+
+                    function parseMinutes(timeStr) {
+                        if (!timeStr || !timeStr.includes(':')) return null;
+                        const [h, m] = timeStr.split(':').map(Number);
+                        if (Number.isNaN(h) || Number.isNaN(m)) return null;
+                        return h * 60 + m;
+                    }
+
+                    function showStatus(msg, isError = false) {
+                        statusMsgEl.textContent = msg;
+                        statusMsgEl.classList.remove('hidden', 'bg-red-100', 'text-red-900', 'bg-white/80', 'text-gray-900');
+                        if (isError) {
+                            statusMsgEl.classList.add('bg-red-100', 'text-red-900');
+                        } else {
+                            statusMsgEl.classList.add('bg-white/80', 'text-gray-900');
+                        }
+                    }
+
+                    function hideStatus() {
+                        statusMsgEl.classList.add('hidden');
+                    }
+
+                    function calculateFee() {
+                        const vehicle = vehicleEl.value;
+                        const inMin = parseMinutes(timeInEl.value);
+                        const outMin = parseMinutes(timeOutEl.value);
+
+                        if (inMin === null || outMin === null) {
+                            feeRielEl.value = '';
+                            feeDollarEl.value = '';
+                            durationTextEl.textContent = 'រយៈពេលផ្ញើរ៖ --';
+                            showStatus('សូមបញ្ចូលម៉ោងចូល និងម៉ោងចេញឱ្យបានត្រឹមត្រូវ។', true);
+                            return;
+                        }
+
+                        let diffMin = outMin - inMin;
+                        let overnight = false;
+                        if (diffMin < 0) {
+                            diffMin += 24 * 60;
+                            overnight = true;
+                        }
+
+                        if (diffMin === 0) {
+                            feeRielEl.value = '0';
+                            feeDollarEl.value = '0.00';
+                            durationTextEl.textContent = 'រយៈពេលផ្ញើរ៖ 0 ម៉ោង';
+                            showStatus('ម៉ោងចូល និងម៉ោងចេញដូចគ្នា (0 ម៉ោង)។', false);
+                            return;
+                        }
+
+                        const hours = diffMin / 60;
+                        const wholeHours = Math.floor(hours);
+                        const remMinutes = diffMin % 60;
+                        const rateTable = RATES[vehicle] || RATES.car;
+                        const hourlyRate = hours <= 8 ? rateTable.upTo8h : rateTable.over8h;
+
+                        const totalRiel = Math.round(hours * hourlyRate);
+                        const totalDollar = totalRiel / EXCHANGE_RATE;
+
+                        feeRielEl.value = totalRiel.toLocaleString('en-US');
+                        feeDollarEl.value = totalDollar.toFixed(2);
+
+                        const durationLabel = remMinutes === 0
+                            ? `${wholeHours} ម៉ោង`
+                            : `${wholeHours} ម៉ោង ${remMinutes} នាទី`;
+                        durationTextEl.textContent = `រយៈពេលផ្ញើរ៖ ${durationLabel} (${hourlyRate.toLocaleString('en-US')}៛/ម៉ោង)`;
+
+                        if (overnight) {
+                            showStatus('កំណត់ចំណាំ៖ បានគណនាឆ្លងថ្ងៃ (ម៉ោងចេញនៅថ្ងៃបន្ទាប់)។', false);
+                        } else {
+                            hideStatus();
+                        }
+                    }
+
+                    form.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        calculateFee();
+                    });
+
+                    vehicleEl.addEventListener('change', calculateFee);
+                    timeInEl.addEventListener('change', calculateFee);
+                    timeOutEl.addEventListener('change', calculateFee);
+
+                    preset4hBtn.addEventListener('click', () => {
+                        timeInEl.value = '08:00';
+                        timeOutEl.value = '12:00';
+                        calculateFee();
+                    });
+
+                    preset10hBtn.addEventListener('click', () => {
+                        timeInEl.value = '07:00';
+                        timeOutEl.value = '17:00';
+                        calculateFee();
+                    });
+
+                    // Initial calculation on load
+                    calculateFee();
+                </script>
+</body>
+
+</html>
